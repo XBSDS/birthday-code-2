@@ -1,0 +1,291 @@
+@font-face {
+    font-family: "HanYiShangWei";
+    src: url("../字体/汉仪尚巍手书W.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "YuWei";
+    src: url("../字体/禹卫书法行书简体.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* 背景色稍微调深一点，突出信封 */
+    background-image: url("../img/风景照2.jpg") ;
+    /* 确保图片铺满屏幕，不重复 */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    margin: 0;
+    overflow: hidden;
+}
+
+/* ================== 核心修改：信封主体 ================== */
+.card {
+    width: 700px;
+    height: 450px;
+    
+    /* 1. 结构修改：底部改为平整的矩形背景，不再需要 ::after 伪元素 */
+    /* 2. 质感修改：加入噪点纹理和细微渐变，模拟粗糙牛皮纸感 */
+    background-color: #1a3c5a; /* 深蓝底色 */
+    background-image: 
+        /* 噪点纹理层 */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+        /* 细微的光影渐变层，增加立体感 */
+        linear-gradient(to bottom, rgba(255,255,255,0.05), rgba(0,0,0,0.1));
+    
+    /* 添加一个很细的边框来定义边缘 */
+    border: 1px solid #102a44;
+    
+    color: #e0c38c;
+    /* 调整阴影，使其更柔和自然 */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.3), 0 5px 15px rgba(0,0,0,0.2);
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    position: relative;
+    border-radius: 4px; /*稍微加一点圆角 */
+}
+
+.card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    
+    /* 1. 结构修改：不再用 border 画图，改用宽高+裁剪 */
+    width: 100%;
+    height: 240px; /* 盖子的高度 */
+    
+    /* 2. 形状修改：使用 clip-path 剪裁出一个倒三角形 */
+    /* 参数意思：左上角(0 0)，右上角(100% 0)，底部中心(50% 100%) */
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    -webkit-clip-path: polygon(0 0, 100% 0, 50% 100%); /* 兼容性 */
+
+    /* 3. 质感修改：关键点！现在可以给盖子加同样的噪点纹理了 */
+    background-color: #234b6e; /* 比主体稍微亮一点的蓝色，区分层次 */
+    background-image: 
+        /* 复制 .card 里的噪点代码 */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.08'/%3E%3C/svg%3E"),
+        /* 加一点光泽渐变 */
+        linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(0,0,0,0.05));
+    
+    z-index: 1; 
+    transform-origin: top;
+    
+    /* 4. 投影修改：clip-path 切割后 box-shadow 会失效，必须用 drop-shadow */
+    filter: drop-shadow(0 4px 6px rgba(0,0,0,0.3));
+
+    /* 新增：添加 transform 过渡时间 */
+    transition: transform 2.5s ease-in-out, z-index 2.5s;
+    transform-origin: top; /* 确保沿着顶部边缘旋转 */
+}
+
+/* ================== 文字样式 "Best wishes" ================== */
+.text.envelope-msg {
+    z-index: 10; 
+    position: absolute;
+    /* 调整文字位置，使其位于信封盖子上方 */
+    top: 80px;
+    
+    font-family: 'Brush Script MT', cursive; 
+    font-size: 3.8em;
+    /* 质感修改：金色文字，带有一点点磨砂和发光效果 */
+    color: #f1dfa8; 
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.4), 0 0 10px rgba(241, 223, 168, 0.3);
+    
+    transform: rotate(-4deg); 
+    letter-spacing: 2px;
+}
+
+/* ================== 爱心/火漆印章 ================== */
+.heart {
+    position: absolute;
+    /* 结构修改：将印章移到盖子的尖端位置 */
+    top: 210px; /* 240px(盖子高度) - 30px(印章半径) */
+    
+    width: 60px;
+    height: 60px;
+    /* 质感修改：火漆颜色更深，边缘更明显 */
+    background: radial-gradient(circle at 30% 30%, #d35400, #a93226);
+    border-radius: 50%;
+    box-shadow: 0 3px 6px rgba(0,0,0,0.4);
+    
+    z-index: 20; 
+    cursor: pointer;
+    /* 增加一个外圈，模拟火漆边缘 */
+    border: 3px solid #922b21;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: serif;
+    font-weight: bold;
+}
+
+/* 可选：在印章中心加一个字母或图案 */
+.heart::after {
+    content: '✉';
+    color: #e6b0aa;
+    font-size: 28px;
+    text-shadow: 0 1px 1px rgba(0,0,0,0.3);
+}
+
+/* ------------------------------------------------ */
+/* 以下是信封打开后的内容样式，保持不变或根据需要微调 */
+/* ------------------------------------------------ */
+.img{
+    height: 100vh;
+    width: 100vw;
+    position: absolute;
+    background-image: url(../img/3.jpg);
+    background-size: cover;
+    z-index: -1;
+}
+.txt{
+    display: flex;
+    justify-content: center;
+    line-height: 50px;
+    flex-direction: column;
+    letter-spacing: 5px;
+    color: rgb(246, 236, 236);
+    position: relative;
+    top: -20px;
+    left: -180px;
+    font-family: "HanYiShangWei";
+}
+.txt p{
+    margin-left: 100px;
+}
+.txt p:nth-child(1){
+    font-size: 35px;
+}
+.txt p:nth-child(2){
+    font-size: 25px;
+}
+.txt p:nth-child(3){
+    font-size: 25px;
+}
+.txt p:nth-child(4){
+    font-size: 35px;
+}
+/* ================== 第二屏：信纸/内容区域 ================== */
+/* 修复：之前丢失了这段样式，导致背景出不来，文字错位 */
+
+/* ================== 第二屏：信纸/内容区域 ================== */
+#box {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1; 
+    opacity: 0; 
+    transition: opacity 2s ease-in-out; 
+
+    /* === 核心修改：布局方式 === */
+    display: flex;
+    flex-direction: column;
+    
+    /* 1. 垂直方向：改为从顶部开始 (消除垂直晃动) */
+    justify-content: flex-start; 
+    
+    /* 2. 水平方向：改为左对齐 (消除水平晃动) */
+    align-items: flex-start;     
+    
+    /* 3. 文本对齐：强制文字左对齐 */
+    text-align: left;            
+
+    /* === 核心修改：边距控制 (控制书写范围) === */
+    /* 上边距 15vh: 让第一行字出现在距离屏幕顶部 15% 的位置，而不是贴顶 */
+    /* 左右边距 20vw: 给左右留出足够的空白，模仿信纸的页边距 */
+    padding: 15vh 15vw 5vh 15vw; 
+    
+    box-sizing: border-box;
+
+    /* 背景设置 */
+    background-image: url(../img/bac.jpg); 
+    background-size: cover;
+    background-position: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    
+    /* 文字样式 */
+    color: #2c3e50; 
+    text-shadow: 0 0 5px rgba(255, 255, 255, 0.9), 0 1px 1px rgba(0,0,0,0.1);
+    font-size: 34px;  
+    font-weight: normal;
+    font-family: 'HanYiShangWei', 'YuWei', "楷体", cursive;
+    line-height: 2.1; 
+    word-wrap: break-word;
+    overflow-y: auto; /* 内容过多时允许滚动 */
+    letter-spacing: 2px;
+    
+    /* 可选：增加首行缩进，更像写作文 */
+    /* text-indent: 2em; */ 
+}
+/* 2. 给文字和印章也添加过渡，翻开时让它们淡出 */
+.card .text,
+.card .heart {
+    transition: opacity 0.5s ease;
+}
+
+/* 3. 定义 .open 状态：盖子翻转 180 度 */
+.card.open::before {
+    /* 沿着 X 轴旋转 180 度，实现向上翻开 */
+    transform: rotateX(180deg);
+    z-index: 0; /* 翻开后层级降低，防止遮挡内部（如果有的话） */
+}
+
+/* 4. 定义 .open 状态：附着在盖子上的文字和印章消失 */
+/* 因为用 CSS 模拟它们跟随伪元素旋转比较复杂，直接淡出视觉上也很自然 */
+.card.open .text,
+.card.open .heart {
+    opacity: 0;
+}
+/* --- 新增：封蜡点击提示样式 --- */
+.click-hint {
+    position: absolute;
+    /* 位置：放在封蜡正下方 */
+    top: 285px; /* 封蜡top(210) + 高度(60) + 间距(15) */
+    
+    font-size: 14px;
+    font-family: 'HanYiShangWei', 'YuWei', serif; /* 使用你的手写字体 */
+    color: rgba(224, 195, 140, 0.8); /* 金色，与 Best wishes 呼应 */
+    letter-spacing: 2px;
+    
+    z-index: 25; /* 确保在最上层 */
+    pointer-events: none; /* 让它不阻挡鼠标点击 */
+    
+    /* 动画：呼吸 + 上下浮动 */
+    animation: hintFloat 2s ease-in-out infinite;
+}
+
+/* 定义浮动动画 */
+@keyframes hintFloat {
+    0%, 100% {
+        opacity: 0.5;
+        transform: translateY(0);
+    }
+    50% {
+        opacity: 1;
+        transform: translateY(3px); /* 轻微下沉 */
+    }
+}
+
+/* 当信封翻开时，提示文字也要消失 */
+.card.open .click-hint {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}

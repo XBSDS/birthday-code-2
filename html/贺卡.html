@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>生日彩蛋 - 特别惊喜</title>
+    <link href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            /* 修改背景色为暖色调，配合你的生日图片 */
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%); /* 浅粉色背景 */
+            font-family: 'Microsoft YaHei', 'PingFang SC', Arial, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        /* --- 气球背景 (颜色调整为更柔和的暖色系) --- */
+        .balloon {
+            position: absolute;
+            width: 60px;
+            height: 80px;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            animation: float 6s ease-in-out infinite;
+            opacity: 0.6; /* 让气球淡一点，不要抢戏 */
+        }
+        .balloon::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            width: 1px;
+            height: 40px;
+            background: #999;
+            transform: translateX(-50%);
+        }
+        /* 气球位置保持不变，颜色略作调整 */
+        .balloon:nth-child(1) { background: linear-gradient(45deg, #FF9A9E, #FECFEF); top: 10%; left: 5%; }
+        .balloon:nth-child(2) { background: linear-gradient(45deg, #a18cd1, #fbc2eb); top: 15%; left: 15%; animation-delay: -1s; }
+        .balloon:nth-child(3) { background: linear-gradient(45deg, #ffd1ff, #fad0c4); top: 20%; left: 85%; animation-delay: -2s; }
+        .balloon:nth-child(4) { background: linear-gradient(45deg, #ff9a9e, #fecfef); top: 30%; right: 10%; animation-delay: -3s; }
+        .balloon:nth-child(5) { background: linear-gradient(45deg, #a18cd1, #fbc2eb); bottom: 20%; left: 8%; animation-delay: -4s; }
+        .balloon:nth-child(6) { background: linear-gradient(45deg, #fad0c4, #ffd1ff); bottom: 25%; right: 5%; animation-delay: -5s; }
+        .balloon:nth-child(7) { background: linear-gradient(45deg, #ffecd2, #fcb69f); top: 5%; left: 70%; animation-delay: -1.5s; }
+        .balloon:nth-child(8) { background: linear-gradient(45deg, #ff9a9e, #fecfef); bottom: 10%; left: 70%; animation-delay: -2.5s; }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(2deg); }
+        }
+
+        /* --- 核心卡片容器 (新设计) --- */
+        .card-container {
+            display: flex;
+            width: 900px; /* 卡片总宽度 */
+            max-width: 95%;
+            height: 600px; /* 卡片高度 */
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.15);
+            z-index: 10;
+            overflow: hidden; /* 确保图片圆角 */
+            position: relative;
+            transition: transform 0.3s;
+        }
+
+        /* 左侧：图片区域 */
+        .card-left {
+            flex: 1.2; /* 左侧稍微宽一点 */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* 保证图片填满且不变形 */
+            transition: transform 0.5s;
+        }
+        
+        /* 鼠标悬停时图片轻微放大 */
+        .card-container:hover .card-image {
+            transform: scale(1.05);
+        }
+
+        /* 右侧：信纸/文字区域 */
+        .card-right {
+            flex: 1;
+            background-color: #FFFBF0; /* 暖米色信纸底色 */
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            text-align: center;
+            border-left: 2px dashed #e0d0b0; /* 分割线，模拟撕纸效果 */
+        }
+
+        /* 文字样式优化 */
+        .greeting-header {
+            font-family: 'Ma Shan Zheng', 'KaiTi', serif; /* 手写体 */
+            font-size: 2.5rem;
+            color: #d45d5d; /* 偏红的暖色 */
+            margin-bottom: 20px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .greeting-content {
+            font-family: 'KaiTi', 'SimKai', serif;
+            font-size: 1.2rem;
+            color: #665;
+            line-height: 2;
+            margin-bottom: 30px;
+            width: 100%;
+        }
+
+        /* 模拟信纸横线 */
+        .paper-line {
+            border-bottom: 1px solid rgba(200, 180, 160, 0.3);
+            display: block;
+            margin-bottom: 15px;
+            padding-bottom: 2px;
+        }
+
+        /* 礼物盒样式 (保持原有动画，调整位置) */
+        .gift-box-wrapper {
+            margin-top: auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .gift-box {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(45deg, #FF69B4, #FFB6C1);
+            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            cursor: pointer;
+            animation: shake 3s infinite;
+        }
+        
+        .gift-box:hover { transform: scale(1.1); }
+
+        .gift-box::before {
+            content: ''; position: absolute; top: -4px; left: 50%;
+            transform: translateX(-50%); width: 12px; height: 68px;
+            background: #FFD700; border-radius: 4px;
+        }
+        .gift-box::after {
+            content: ''; position: absolute; top: 24px; left: -4px;
+            width: 68px; height: 12px;
+            background: #FFD700; border-radius: 4px;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            10% { transform: rotate(-5deg); }
+            20% { transform: rotate(5deg); }
+            30% { transform: rotate(0deg); }
+        }
+
+        .click-hint {
+            font-size: 0.9rem;
+            color: #FF69B4;
+            margin-top: 10px;
+            font-weight: bold;
+        }
+
+        /* --- 动画特效层 (保持原有逻辑) --- */
+        .floating-images, .floating-particles, .fireworks {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 5; /* 在卡片下面，背景之上 */
+        }
+        
+        /* 烟花层要在最上面 */
+        .fireworks { z-index: 20; }
+
+        /* 浮现图片样式 (原有) */
+        .floating-image {
+            position: absolute;
+            width: 150px; height: 150px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            opacity: 0;
+            animation: floatImage 15s linear forwards;
+            object-fit: cover;
+            z-index: 30; /* 浮现图片要盖住卡片 */
+        }
+
+        @keyframes floatImage {
+            0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-200px) rotate(360deg) scale(1.2); opacity: 0; }
+        }
+
+        .particle {
+            position: absolute; width: 6px; height: 6px;
+            background: #FF69B4; border-radius: 50%;
+            animation: particle-float 8s linear infinite;
+        }
+        @keyframes particle-float {
+            0% { transform: translateY(100vh); opacity: 1; }
+            100% { transform: translateY(-100px); opacity: 0; }
+        }
+
+        .firework {
+            position: absolute; width: 6px; height: 6px;
+            background: radial-gradient(circle, #fff, transparent);
+            border-radius: 50%;
+            animation: explode 1.5s infinite;
+        }
+        @keyframes explode {
+            0% { transform: scale(0); opacity: 1; }
+            100% { transform: scale(25); opacity: 0; }
+        }
+
+        /* --- 响应式适配 (手机端变为上下结构) --- */
+        @media (max-width: 768px) {
+            .card-container {
+                flex-direction: column;
+                height: 85vh;
+                width: 90%;
+            }
+            .card-left {
+                flex: 1;
+                max-height: 40%;
+            }
+            .card-right {
+                flex: 1.5;
+                padding: 20px;
+            }
+            .greeting-header { font-size: 2rem; }
+            .greeting-content { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="balloon"></div><div class="balloon"></div>
+    <div class="balloon"></div><div class="balloon"></div>
+    <div class="balloon"></div><div class="balloon"></div>
+
+    <div class="floating-images" id="floatingImages"></div>
+    <div class="floating-particles" id="particles"></div>
+    <div class="fireworks" id="fireworks"></div>
+    
+    <div class="card-container">
+        <div class="card-left">
+            <img src="生日贺卡.jpg" alt="生日快乐" class="card-image">
+        </div>
+
+        <div class="card-right">
+            <h1 class="greeting-header">To: ❌❌❌</h1>
+            
+            <div class="greeting-content">
+                <span class="paper-line">感谢你短期的陪伴，</span>
+                <span class="paper-line">一路闪闪发光。</span>
+                <span class="paper-line" style="margin-top: 20px;"><b>祝你生日快乐！</b></span>
+                <span class="paper-line">愿时光温柔以待，</span>
+                <span class="paper-line">愿你每一天都活力满满！</span>
+            </div>
+
+            <div class="gift-box-wrapper" onclick="goToEasterEgg()">
+                <div class="gift-box"></div>
+                <div class="click-hint">点击拆开礼物 ✨</div>
+            </div>
+            
+            </div>
+    </div>
+
+    <audio id="backgroundMusic" loop>
+        <source src="../music/月球下的人.mp3" type="audio/mpeg">
+    </audio>
+
+    <script>
+        // --- 保持原有的 JavaScript 逻辑完全不变 ---
+        let imageAnimationStarted = false;
+        const maxImages = 10;
+        let imageInterval;
+        let audioElement;
+        let currentImageIndex = 0;
+
+        function initializeAudio() {
+            audioElement = document.getElementById('backgroundMusic');
+            const urlParams = new URLSearchParams(window.location.search);
+            const audioTime = urlParams.get('audioTime');
+            if (audioTime) {
+                audioElement.currentTime = parseFloat(audioTime);
+            } else {
+                const savedTime = sessionStorage.getItem('audioCurrentTime');
+                if (savedTime) {
+                    audioElement.currentTime = parseFloat(savedTime);
+                }
+            }
+            audioElement.play().catch(error => {
+                console.log('自动播放失败，需要交互');
+                document.addEventListener('click', function playOnFirstClick() {
+                    audioElement.play();
+                    document.removeEventListener('click', playOnFirstClick);
+                }, { once: true });
+            });
+            setInterval(() => {
+                if (audioElement && !audioElement.paused) {
+                    sessionStorage.setItem('audioCurrentTime', audioElement.currentTime);
+                }
+            }, 1000);
+        }
+
+        function createFloatingImages() {
+            if (imageAnimationStarted) return;
+            imageAnimationStarted = true;
+            const imagesContainer = document.getElementById('floatingImages');
+            showNextImage();
+            imageInterval = setInterval(() => { showNextImage(); }, 2000);
+        }
+
+        function showNextImage() {
+            const imagesContainer = document.getElementById('floatingImages');
+            currentImageIndex = (currentImageIndex % maxImages) + 1;
+            const image = document.createElement('img');
+            image.className = 'floating-image';
+            image.src = `../img/流图${currentImageIndex}.jpg`; // 确保路径正确
+            image.style.left = Math.random() * (window.innerWidth - 200) + 'px';
+            image.style.animationDelay = Math.random() * 0.5 + 's';
+            image.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            image.onerror = function() { this.style.display = 'none'; };
+            imagesContainer.appendChild(image);
+            setTimeout(() => { if (image.parentNode) image.remove(); }, 15000);
+        }
+
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            setInterval(() => {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDuration = (Math.random() * 3 + 5) + 's';
+                particle.style.background = `hsl(${Math.random() * 60 + 330}, 70%, 70%)`; // 调整粒子颜色为粉/紫色
+                particlesContainer.appendChild(particle);
+                setTimeout(() => { particle.remove(); }, 8000);
+            }, 300);
+        }
+
+        function createFireworks() {
+            const fireworksContainer = document.getElementById('fireworks');
+            for (let i = 0; i < 30; i++) {
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = Math.random() * 100 + '%';
+                firework.style.top = Math.random() * 100 + '%';
+                firework.style.background = `hsl(${Math.random() * 60 + 300}, 70%, 60%)`;
+                firework.style.animationDelay = Math.random() * 0.5 + 's';
+                fireworksContainer.appendChild(firework);
+                setTimeout(() => { firework.remove(); }, 1500);
+            }
+            playBirthdaySong();
+        }
+
+        function goToEasterEgg(){
+            createFireworks();
+            setTimeout(() => { createFloatingImages(); }, 1000);
+            setTimeout(() => {
+                if (imageInterval) clearInterval(imageInterval);
+                window.location.href='../html/彩蛋原版.html'; // 确保路径正确
+            }, 8000); // 缩短一点跳转时间，原版20秒可能太长，建议改为5-8秒体验更好
+        }
+
+        function playBirthdaySong() {
+            if ('AudioContext' in window || 'webkitAudioContext' in window) {
+                const AudioContext = window.AudioContext || window.webkitAudioContext;
+                const audioCtx = new AudioContext();
+                const notes = [261.63, 261.63, 293.66, 261.63, 349.23, 329.63, 261.63, 261.63, 293.66, 261.63, 392.00, 349.23];
+                notes.forEach((freq, index) => {
+                    setTimeout(() => {
+                        const oscillator = audioCtx.createOscillator();
+                        const gainNode = audioCtx.createGain();
+                        oscillator.connect(gainNode);
+                        gainNode.connect(audioCtx.destination);
+                        oscillator.frequency.value = freq;
+                        oscillator.type = 'sine';
+                        gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+                        gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.4);
+                        oscillator.start(audioCtx.currentTime);
+                        oscillator.stop(audioCtx.currentTime + 0.4);
+                    }, index * 400);
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeAudio();
+            createParticles();
+            document.addEventListener('click', function(e) {
+                if (e.target.closest('.card-container')) return; // 点击卡片不触发随机烟花，避免干扰
+                const firework = document.createElement('div');
+                firework.className = 'firework';
+                firework.style.left = e.clientX + 'px';
+                firework.style.top = e.clientY + 'px';
+                firework.style.background = `hsl(${Math.random() * 60 + 300}, 70%, 60%)`;
+                firework.style.position = 'fixed';
+                document.getElementById('fireworks').appendChild(firework);
+                setTimeout(() => { firework.remove(); }, 1500);
+            });
+            
+            document.addEventListener('visibilitychange', function() {
+                if (document.hidden) {
+                    if (audioElement && !audioElement.paused) sessionStorage.setItem('audioCurrentTime', audioElement.currentTime);
+                } else {
+                    if (audioElement) {
+                        const savedTime = sessionStorage.getItem('audioCurrentTime');
+                        if (savedTime) audioElement.currentTime = parseFloat(savedTime);
+                        audioElement.play().catch(e => console.log(e));
+                    }
+                }
+            });
+        });
+        window.addEventListener('beforeunload', function() {
+            if (audioElement && !audioElement.paused) sessionStorage.setItem('audioCurrentTime', audioElement.currentTime);
+        });
+    </script>
+</body>
+</html>

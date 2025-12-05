@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday</title>
+  <link rel="stylesheet" href="../css/normalizel.css">
+  <link rel="stylesheet" href="../css/stylel.css" media="screen" type="text/css" />
+
+  <style>
+    /* 1. 定义自定义字体 */
+    @font-face {
+        font-family: 'YuWeiFont';
+        src: url('../字体/禹卫书法行书简体.ttf');
+    }
+    
+    /* 2. 强制预加载字体 */
+    #font-preload {
+        font-family: 'YuWeiFont';
+        position: absolute;
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    /* 3. 核心背景修复 */
+    body {
+        background-image: linear-gradient(rgba(10, 20, 40, 0.6), rgba(10, 20, 40, 0.6)), url('../img/雪树林.jpg') !important;
+        
+        /* 强制背景设置生效 */
+        background-size: cover !important;
+        background-position: center center !important;
+        background-repeat: no-repeat !important;
+        background-attachment: fixed !important;
+        
+        /* 强制背景色为透明，防止颜色遮挡图片 */
+        background-color: transparent !important; 
+        
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+    }
+
+    /* 4. 防止画布本身带有背景色 */
+    .canvas {
+        background: transparent !important;
+    }
+  </style>
+
+<body>
+<canvas class="canvas"></canvas>
+<div id="font-preload">载入字体中...</div>
+<div class="help">?</div> 
+
+<div class="ui">
+  <input class="ui-input" type="text" />
+  <span class="ui-return">↵</span>
+</div>
+
+<div class="overlay">
+  <div class="tabs">
+    <div class="tabs-labels"><span class="tabs-label">M</span><span class="tabs-label">E</span><span class="tabs-label">X</span></div>
+
+    <div class="tabs-panels">
+      <ul class="tabs-panel commands">
+        <li class="commands-item"><span class="commands-item-title">Text</span><span class="commands-item-info" data-demo="Hello :)">Type anything</span><span class="commands-item-action">Demo</span></li>
+        <li class="commands-item"><span class="commands-item-title">Countdown</span><span class="commands-item-info" data-demo="#countdown 10">#countdown<span class="commands-item-mode">number</span></span><span class="commands-item-action">Demo</span></li>
+        <li class="commands-item"><span class="commands-item-title">Time</span><span class="commands-item-info" data-demo="#time">#time</span><span class="commands-item-action">Demo</span></li>
+        <li class="commands-item"><span class="commands-item-title">Rectangle</span><span class="commands-item-info" data-demo="#rectangle 30x15">#rectangle<span class="commands-item-mode">width x height</span></span><span class="commands-item-action">Demo</span></li>
+        <li class="commands-item"><span class="commands-item-title">Circle</span><span class="commands-item-info" data-demo="#circle 25">#circle<span class="commands-item-mode">diameter</span></span><span class="commands-item-action">Demo</span></li>
+
+        <li class="commands-item commands-item--gap"><span class="commands-item-title">Animate</span><span class="commands-item-info" data-demo="The time is|#time|#countdown 3|#icon thumbs-up"><span class="commands-item-mode">command1</span>&nbsp;|<span class="commands-item-mode">command2</span></span><span class="commands-item-action">Demo</span></li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+  <script src="../js/indexl.js"></script>
+  <audio src="../music/happy birthday.mp3" autoplay="autoplay" loop="loop"></audio>
+</body>
+
+</html>

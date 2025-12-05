@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>特别的祝福</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      /* 1. 背景修改：保持与上一页一致的星空背景 */
+      background-color: #000;
+      /* 1. 先设置一个保底的渐变色 (放在图片前面，这样如果图片透明或没加载，它会在下面) */
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+
+      background-image: url('月亮.jpg'); /* 请确保图片在同一目录下 */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      
+      font-family: "Microsoft YaHei", Arial, sans-serif;
+      padding: 20px;
+      overflow: hidden; /* 防止出现滚动条影响沉浸感 */
+    }
+
+    /* 2. 容器修改：由白色改为磨砂玻璃风格 */
+    .container {
+      max-width: 900px;
+      width: 100%;
+      /* 核心：半透明深色背景 + 模糊滤镜 */
+      background: rgba(255, 255, 255, 0.05); 
+      backdrop-filter: blur(10px); 
+      -webkit-backdrop-filter: blur(10px);
+      
+      border: 1px solid rgba(255, 255, 255, 0.1); /* 极细的边框 */
+      border-radius: 20px;
+      padding: 40px;
+      
+      /* 阴影改为发光感 */
+      box-shadow: 0 0 40px rgba(0, 0, 0, 0.6); 
+      
+      /*animation: fadeIn 1.5s ease-out; 稍微放慢入场速度 */
+      position: relative;
+      z-index: 10;
+      opacity: 0;
+      transform: translateY(30px) scale(0.95);
+      transition: opacity 1.5s ease-out, transform 1.5s ease-out;
+    }
+    .container.active {
+    opacity: 1;
+    transform: none; /* 关键：动画结束后，完全移除 transform 属性 */
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(30px) scale(0.95);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* 3. 标题修改：白色发光字体 */
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 32px;
+      letter-spacing: 2px;
+      color: #fff;
+      /* 移除原来的背景裁剪，改为文字阴影 */
+      background: none;
+      -webkit-text-fill-color: initial;
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.6), 0 0 20px rgba(100, 200, 255, 0.4);
+    }
+
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      border-radius: 15px;
+      /*overflow: hidden;*/
+      background: #000;
+      /* 给视频加一圈淡淡的光晕 */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5), 0 0 0 1px rgba(255, 255, 255, 0.1);
+    }
+
+    video {
+      width: 100%;
+      height: auto;
+      display: block;
+      outline: none;
+    }
+
+    /* 4. 文字修改：改为亮色 */
+    .message {
+      text-align: center;
+      margin-top: 35px;
+      color: rgba(255, 255, 255, 0.9); /* 亮白色 */
+      font-size: 18px;
+      line-height: 1.8;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    
+    .message p {
+        margin-bottom: 10px;
+    }
+
+    .controls-info {
+      text-align: center;
+      margin-top: 15px;
+      color: rgba(255, 255, 255, 0.5); /* 灰色说明文字 */
+      font-size: 12px;
+      letter-spacing: 1px;
+    }
+
+    /* 装饰性背景光点（可选，增加氛围） */
+    .glow-bg {
+        position: fixed;
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(100,100,255,0.1) 0%, rgba(0,0,0,0) 70%);
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 1;
+        pointer-events: none;
+    }
+
+    /* 移动端适配优化 */
+    @media (max-width: 768px) {
+        .container {
+            padding: 20px;
+        }
+        h1 {
+            font-size: 24px;
+        }
+        .message {
+            font-size: 16px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <div class="container">
+    <h1>✨ 特别的祝福送给特别的你 ✨</h1>
+    
+    <div class="video-wrapper">
+      <video 
+      id="birthdayVideo"
+      controls 
+      preload="auto"
+      width="100%" 
+      playsinline 
+      webkit-playsinline> 
+      <source src="../video/结尾视频.mp4" type="video/mp4">
+      您的浏览器不支持视频播放。
+      </video>
+    </div>
+
+    <div class="controls-info">
+      💡 建议佩戴耳机观看以获得最佳体验
+    </div>
+
+    <div class="message">
+      <p>亲爱的朋友，不忙的话，还请你耐心看完这个视频哟！</p>
+      <p>愿你的每一天都充满惊喜与快乐、都洋溢着幸福与欢笑 🎂</p>
+      <p>每一段代码都有终止符，但你的故事是持续热更新的动态脚本！</p>
+    </div>
+  </div>
+
+  <!--<script>
+    const video = document.getElementById('birthdayVideo');
+    
+    video.addEventListener('loadeddata', () => {
+      console.log('视频加载完成');
+    });
+
+    video.addEventListener('error', (e) => {
+      console.error('视频加载失败:', e);
+      const wrapper = document.querySelector('.video-wrapper');
+      wrapper.innerHTML = `
+        <div style="padding: 60px 20px; text-align: center; color: rgba(255,255,255,0.8);">
+          <p style="font-size: 40px; margin-bottom: 20px;">📼</p>
+          <p style="font-size: 18px; margin-bottom: 10px;">视频好像迷路了...</p>
+          <p style="font-size: 12px; color: rgba(255,255,255,0.4);">请检查 ../video/结尾视频.mp4 是否存在</p>
+        </div>
+      `;
+    });
+  </script>-->
+  <script>
+    const video = document.getElementById('birthdayVideo');
+    const container = document.querySelector('.container');
+
+    // 1. 页面加载后触发入场动画
+    window.onload = function() {
+        // 强制重绘
+        container.offsetHeight; 
+        // 添加激活类，开始动画
+        container.classList.add('active');
+    };
+
+    // 2. 视频加载监听（保持你原有的逻辑）
+    video.addEventListener('loadeddata', () => {
+      console.log('视频加载完成');
+    });
+
+    // ... 你原有的 error 监听代码 ...
+    
+    // 3. 【新增】强制全屏修复补丁
+    // 如果浏览器真的死活不让用原生按钮，我们监听双击视频区域强制全屏
+    video.addEventListener('dblclick', function() {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if (video.webkitRequestFullscreen) { /* Safari */
+            video.webkitRequestFullscreen();
+        } else if (video.msRequestFullscreen) { /* IE11 */
+            video.msRequestFullscreen();
+        }
+    });
+</script>
+</body>
+</html>

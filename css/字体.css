@@ -1,0 +1,52 @@
+@font-face {
+    font-family: "HanYiShangWei"; /* 自定义字体名，任意取名 */
+    src: url("../字体/汉仪尚巍手书W.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: "YuWei"; /* 自定义字体名，任意取名 */
+    src: url("../字体/禹卫书法行书简体.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* 只把 h1（“生日快乐”）设为汉仪字体 */
+h1 {
+    font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif;
+    font-size: 56px;
+    line-height: 1.1;
+    margin: 0 0 40px;
+}
+/* ...existing code... */
+/* 使输入框显示同样的汉仪字体（针对已输入的值和 placeholder） */
+#userName,
+input[type="text"],
+.form input {
+    font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif;
+    font-size: 30px;
+    line-height: 1.2;
+    padding: 15px 20px;
+}
+
+/* placeholder 兼容写法 */
+#userName::placeholder,
+input[type="text"]::placeholder,
+.form input::placeholder {
+    font-size: 30px;
+    font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif;
+    opacity: 0.8;
+}
+/* 覆盖 styles.css 中的 .container h1，使“生日快乐”变大 */
+.container h1 {
+    font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif;
+    font-size: 56px; /* 按需调整大小 */
+    line-height: 1.1;
+    margin: 0 0 40px;
+}
+
+#userName:-ms-input-placeholder { font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif; }
+#userName::-ms-input-placeholder { font-family: "HanYiShangWei", "微软雅黑", "苹方", "宋体", serif; }

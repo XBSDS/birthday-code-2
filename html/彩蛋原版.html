@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>星空 - 生日快乐</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      background: #000; /* 默认黑色 */
+    }
+
+    /* 背景层：
+       这里设置了多重保障。
+       1. 优先显示您的图片 '星空.jpg'
+       2. 如果图片没加载出来，会显示一个深邃的蓝紫色渐变，依然很好看。
+    */
+    #bg-layer {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      /* 渐变背景保底 */
+      background: radial-gradient(ellipse at bottom, #1b2735 0%, #090a0f 100%);
+      
+      /* 您原本的图片设置 (请确保图片在同一目录下) */
+      background-image: url('星空.jpg');
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .bottom-text {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      color: rgba(255, 255, 255, 0.6);
+      font-size: 14px;
+      font-family: sans-serif;
+      text-shadow: 0 0 5px rgba(255,255,255,0.5);
+      z-index: 1000;
+      pointer-events: none;
+    }
+
+    /* --- 新增按钮样式：星际水晶风格 --- */
+    .continue-button {
+      position: fixed;
+      bottom: -100px; /* 初始位置在屏幕外 */
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 40px;
+      
+      /* 字体样式 */
+      font-size: 16px;
+      font-family: "Microsoft YaHei", sans-serif;
+      letter-spacing: 3px; /* 增加字间距，更有呼吸感 */
+      color: rgba(255, 255, 255, 0.9);
+      text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+      
+      /* 核心背景：半透明磨砂玻璃 */
+      background: rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(5px); /* 背景模糊 */
+      border: 1px solid rgba(255, 255, 255, 0.2); /* 细微的边框 */
+      border-radius: 50px; /* 圆角 */
+      
+      cursor: pointer;
+      z-index: 2000; /* 保证在最上层 */
+      
+      /* 动画过渡 */
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+      opacity: 0;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    }
+
+    /* 按钮出现时的状态 */
+    .continue-button.show {
+      bottom: 80px; /* 最终浮起的高度 */
+      opacity: 1;
+    }
+
+    /* 鼠标悬停特效：发光增强 */
+    .continue-button:hover {
+      background: rgba(255, 255, 255, 0.15);
+      border-color: rgba(255, 255, 255, 0.6);
+      box-shadow: 0 0 25px rgba(100, 200, 255, 0.6), inset 0 0 10px rgba(255, 255, 255, 0.2);
+      transform: translateX(-50%) translateY(-3px) scale(1.05);
+      color: #fff;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div id="bg-layer"></div>
+  <canvas id="c1" style="display:none;"></canvas>
+  <canvas id="c2"></canvas>
+  <canvas id="c3"></canvas>
+  
+  <div class="bottom-text">小同志，不要着急，再耐心等待一会儿</div>
+  <button class="continue-button" id="continueBtn">继续旅程 ✨</button>
+
+  <script>
+    const CONFIG = {
+      particleCount: 270,  // 烟花粒子数
+      fidelity: 3,        // 像素精度
+      fontSize: 220,      // 字号
+      text: '❌❌，生日快乐' ,// 文字内容
+      fontFamily: '"HanYiShangWei", "YuWei", "KaiTi", "Comic Sans MS", cursive, sans-serif'
+    };
+
+    const c1 = document.getElementById('c1');
+    const c2 = document.getElementById('c2');
+    const c3 = document.getElementById('c3');
+    const ctx1 = c1.getContext('2d');
+    const ctx2 = c2.getContext('2d');
+    const ctx3 = c3.getContext('2d');
+
+    let w = window.innerWidth;
+    let h = window.innerHeight;
+    c2.width = c3.width = w;
+    c2.height = c3.height = h;
+
+    // --- 1. 文字像素初始化 ---
+    ctx1.fillStyle = '#000';
+    let textWidth = 99999999;
+    let currentFontSize = CONFIG.fontSize;
+    // 适配屏幕宽度
+    while (textWidth > w * 0.85) {
+      ctx1.font = `900 ${currentFontSize--}px ${CONFIG.fontFamily}`;
+      textWidth = ctx1.measureText(CONFIG.text).width;
+    }
+    c1.width = textWidth;
+    c1.height = currentFontSize * 1.5;
+    ctx1.font = `900 ${currentFontSize}px ${CONFIG.fontFamily}`;
+    ctx1.fillText(CONFIG.text, 0, currentFontSize);
+    
+    const imgData = ctx1.getImageData(0, 0, c1.width, c1.height);
+    const targets = [];
+    for (let i = 0; i < imgData.data.length; i += 4) {
+      if (imgData.data[i + 3] > 128) { // 只取不透明度大于128的像素
+        const x = (i / 4) % c1.width;
+        const y = Math.floor((i / 4) / c1.width);
+        if (x % CONFIG.fidelity === 0 && y % CONFIG.fidelity === 0) {
+          targets.push({ x, y });
+        }
+      }
+    }
+
+    // 设置c3文字层的样式
+    ctx3.shadowColor = '#FFF';
+    ctx3.shadowBlur = 10;
+
+    function getTarget() {
+      if (targets.length > 0) {
+        const idx = Math.floor(Math.random() * targets.length);
+        let { x, y } = targets[idx];
+        targets.splice(idx, 1);
+        // 居中计算
+        x += (w - textWidth) / 2;
+        y += (h - currentFontSize) / 2;
+        return { x, y };
+      }
+    }
+
+    // --- 2. 纯代码生成星空 (保底方案) ---
+    // 如果背景图没加载，这些星星会让画面依然好看
+    const stars = [];
+    for(let i=0; i<200; i++) {
+        stars.push({
+            x: Math.random() * w,
+            y: Math.random() * h,
+            size: Math.random() * 2,
+            blink: Math.random()
+        });
+    }
+    function drawStars() {
+        // 在c2的底层画星星，但因为c2会被擦除，所以我们在bg-layer里做文章，或者如果不做复杂操作，
+        // 这里为了性能，我们假设背景图有效。如果背景图无效，CSS里的渐变会生效。
+        // 为了让流星更明显，我们不每帧重绘静态星星。
+    }
+
+
+// --- 3. 梦幻流星类 (已修正尾迹方向和速度) ---
+    class Meteor {
+      constructor() {
+        this.reset();
+      }
+      reset() {
+        // 1. 位置设定：
+        // x从屏幕右侧(w)到右侧外(+400)随机生成，确保它是从右边飞进来的
+        this.x = Math.random() * w + 300; 
+        // y从屏幕上方(-100)生成
+        this.y = Math.random() * -100;
+        
+        // 2. 形态参数 (可在此微调)：
+        this.len = Math.random() * 200 + 150; // 尾巴长度：150~350
+        this.size = Math.random() * 0.5 + 0.5; // 粗细：非常细，0.5~1.0，避免出现“双尾巴”的视觉宽带
+        
+        // 3. 速度参数 (已调慢)：
+        // 这里的数值越小越慢。原来是 4~10，现在改为 1.5~3，营造“缓缓滑落”的感觉
+        this.speed = Math.random() * 0.5 + 2; 
+
+        // 4. 角度参数：
+        // Math.PI / 4 是45度。+0.1~0.2 让它稍微稍微偏平一点点，符合视觉习惯
+        this.angle = Math.PI / 4 + (Math.random() * 0.2); 
+        
+        // 颜色
+        this.hue = Math.random() * 50 + 200; // 200~250 也是蓝紫色系
+        this.active = true;
+      }
+
+      update() {
+        // 移动逻辑：
+        // x -= ... 向左移动
+        // y += ... 向下移动
+        // 这种组合就是“从右上 往 左下”飞
+        this.x -= this.speed * Math.cos(this.angle);
+        this.y += this.speed * Math.sin(this.angle);
+
+        // 边界检查：飞出左侧(-300)或下方(h+300)后重置
+        if (this.x < -300 || this.y > h + 300) {
+          this.reset();
+        }
+      }
+
+      draw() {
+        ctx2.save();
+        ctx2.translate(this.x, this.y);
+        ctx2.rotate(Math.PI - this.angle);
+        
+        // 1. 绘制头部 (发光的小圆点)
+        ctx2.fillStyle = '#fff';
+        ctx2.shadowBlur = 5;
+        ctx2.shadowColor = '#fff'; // 头部白光
+        ctx2.beginPath();
+        // 头部稍微画大一点点(size*2)，更有陨石燃烧的感觉
+        ctx2.arc(0, 0, this.size * 2, 0, Math.PI * 2);
+        ctx2.fill();
+
+        // 2. 绘制尾巴 (单条渐变拖尾)
+        // 这里的坐标系已经是旋转过的了：负X轴方向就是尾巴方向
+        const gradient = ctx2.createLinearGradient(0, 0, -this.len, 0);
+        gradient.addColorStop(0, "rgba(255, 255, 255, 1)");      // 紧贴头部：纯白不透明
+        gradient.addColorStop(0.1, `hsla(${this.hue}, 100%, 80%, 0.8)`); // 靠近头部：带点颜色的亮光
+        gradient.addColorStop(1, "transparent");                 // 尾端：完全透明
+
+        ctx2.fillStyle = gradient;
+        ctx2.shadowBlur = 0; // 尾巴不要发光模糊，保持锐利线条感
+        ctx2.beginPath();
+        
+        // 画一个极细的等腰三角形，避免出现“双边”
+        ctx2.moveTo(0, -this.size * 0.5); // 上边
+        ctx2.lineTo(-this.len, 0);        // 尾尖 (在后面)
+        ctx2.lineTo(0, this.size * 0.5);  // 下边
+        ctx2.fill();
+        
+        ctx2.restore();
+      }
+    }
+
+    // --- 4. 烟花与粒子 ---
+    class Shard {
+      constructor(x, y, hue) {
+        this.x = x; this.y = y; 
+        this.hue = Math.floor(Math.random() * 140) + 180;
+
+        this.target = getTarget();
+        this.angle = Math.random() * Math.PI * 2;
+        this.speed = Math.random() * 3.5 + 2;
+        this.friction = 0.95;
+        this.gravity = 0.1;
+        this.size = 2;
+        this.timer = 0;
+        this.ttl = 100 + Math.random() * 50;
+        // 初始速度
+        this.vx = Math.cos(this.angle) * this.speed;
+        this.vy = Math.sin(this.angle) * this.speed;
+        this.lightness = 70 + Math.random() * 25;
+        this.color = `hsl(${this.hue}, 100%, ${this.lightness}%)`;
+        // 发光颜色饱和度拉满，但亮度适中，制造霓虹感
+        this.glowColor = `hsl(${this.hue}, 100%, 60%)`;
+      }
+      update() {
+        this.vx *= this.friction;
+        this.vy *= this.friction;
+        this.vy += this.gravity;
+        
+        // 如果有目标位置，产生吸力
+        if (this.target) {
+            const dx = this.target.x - this.x;
+            const dy = this.target.y - this.y;
+            const dist = Math.sqrt(dx*dx + dy*dy);
+            // 靠近目标时
+            if(dist < 50) {
+                this.vx += dx * 0.005;
+                this.vy += dy * 0.005;
+            }
+        }
+
+        this.x += this.vx;
+        this.y += this.vy;
+        this.timer++;
+      }
+      draw() {
+        // 强行提亮颜色：亮度设为 60%~90% (越接近100%越白越亮)
+        const lightness = 40 + Math.random() * 30; 
+        ctx2.save(); 
+        // 关键：lighter 模式会让重叠的粒子发光变白
+        ctx2.globalCompositeOperation = 'lighter'; 
+        ctx2.fillStyle = `hsl(${this.hue}, 100%, ${lightness}%)`;
+        // 关键：增加发光晕染效果，让粒子看起来像发光的灯泡而不是色块
+        ctx2.shadowBlur = 5; 
+        ctx2.shadowColor = `hsl(${this.hue}, 100%, 50%)`;
+        ctx2.beginPath();
+        ctx2.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+        ctx2.fill();
+        ctx2.restore();
+      }
+    }
+
+    class Rocket {
+      constructor() {
+        // 【修改点】x坐标改为 0 到 w 之间，不再局限于中间
+        this.x = Math.random() * w; 
+        this.y = h;
+        this.hue = Math.random() * 360;
+        
+        // 目标高度：屏幕高度的 10% 到 60% 之间随机爆炸
+        this.targetY = h * 0.15 + Math.random() * h * 0.25; 
+        
+        this.vy = -(10 + Math.random() * 5); // 上升速度
+        this.vx = (Math.random() - 0.5) * 2; // 稍微带点左右偏移
+        this.exploded = false;
+      }
+      update() {
+        this.x += this.vx;
+        this.y += this.vy;
+        this.vy += 0.12; // 重力
+        
+        // 到达目标高度或速度耗尽时爆炸
+        if (this.vy >= 0 || this.y < this.targetY) {
+            this.explode();
+            return false; 
+        }
+        return true; 
+      }
+      draw() {
+        ctx2.fillStyle = `hsl(${this.hue}, 100%, 50%)`;
+        ctx2.fillRect(this.x, this.y, 3, 10);
+      }
+      explode() {
+        const count = CONFIG.particleCount;
+        for(let i=0; i<count; i++) {
+            shards.push(new Shard(this.x, this.y, this.hue));
+        }
+      }
+    }
+
+    // --- 5. 动画循环 ---
+    const meteors = Array.from({length: 12}, () => new Meteor());
+    let rockets = [];
+    let shards = [];
+    let tick = 0;
+
+    function loop() {
+      // 1. 清除画布（制造拖尾效果）
+      // 使用 destination-out 让上一帧变透明，从而透出背景图
+      // 透明度 0.15 控制拖尾长度：数值越小拖尾越长（更梦幻），数值越大拖尾越短（更干净）
+      ctx2.globalCompositeOperation = 'destination-out';
+      ctx2.fillStyle = 'rgba(0, 0, 0, 0.15)'; 
+      ctx2.fillRect(0, 0, w, h);
+
+      // 2. 恢复正常绘图模式（必须要恢复，否则画不出东西）
+      ctx2.globalCompositeOperation = 'source-over';
+
+      tick++;
+
+      // 绘制流星
+      meteors.forEach(m => { m.update(); m.draw(); });
+
+      // 绘制火箭
+      if (tick % 40 === 0 && targets.length > 0) {
+        rockets.push(new Rocket());
+      }
+      
+      // 更新火箭
+      rockets = rockets.filter(r => {
+        r.draw();
+        return r.update();
+      });
+
+      // 更新碎片
+      for (let i = shards.length - 1; i >= 0; i--) {
+        const s = shards[i];
+        s.update();
+        s.draw();
+
+        if (s.timer > s.ttl) {
+            if(s.target) {
+                // 文字落点也加一点高光
+                ctx3.save();
+                ctx3.globalCompositeOperation = 'lighter';
+                ctx3.shadowBlur = 15;
+                ctx3.shadowColor = s.glowColor;
+                ctx3.fillStyle = s.color;
+                //ctx3.shadowColor = '#fff';
+                //ctx3.fillStyle = `hsl(${s.hue}, 100%, 70%)`;
+                //ctx3.fillRect(s.target.x, s.target.y, CONFIG.fidelity, CONFIG.fidelity);
+                //ctx3.restore();
+                ctx3.beginPath();
+                ctx3.arc(s.target.x + CONFIG.fidelity/2, s.target.y + CONFIG.fidelity/2, CONFIG.fidelity/1.5, 0, Math.PI*2);
+                ctx3.fill();
+                ctx3.restore();
+            }
+            shards.splice(i, 1);
+        }
+      }
+
+      requestAnimationFrame(loop);
+    }
+
+    loop();
+
+    // 窗口调整
+    window.addEventListener('resize', () => {
+        w = window.innerWidth;
+        h = window.innerHeight;
+        c2.width = c3.width = w;
+        c2.height = c3.height = h;
+    });
+
+    // --- 新增按钮逻辑 ---
+    
+    // 1. 定时显示按钮 (建议设置为10000ms，等文字差不多聚拢时出现)
+    setTimeout(() => {
+      const btn = document.getElementById('continueBtn');
+      if (btn) {
+        btn.classList.add('show');
+      }
+    }, 10000);
+
+    // 2. 点击跳转事件
+    document.getElementById('continueBtn').addEventListener('click', () => {
+      // 添加一个淡出效果，让转场更丝滑
+      document.body.style.transition = 'opacity 1s';
+      document.body.style.opacity = '0';
+      
+      setTimeout(() => {
+        // 这里修改为您要跳转的文件名，例如 '结尾.html'
+        window.location.href = '结尾.html'; 
+      }, 1000);
+    });
+
+  </script>
+  <audio src="../music/一程山路.mp3" autoplay loop></audio>
+</body>
+</html>

@@ -1,0 +1,583 @@
+@font-face {
+    font-family: "HanYiShangWei"; /* 自定义字体名，任意取名 */
+    src: url("../字体/汉仪尚巍手书W.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: "YuWei"; /* 自定义字体名，任意取名 */
+    src: url("../字体/禹卫书法行书简体.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+body {
+	display:block;
+	margin:0px;
+	overflow:hidden;
+}
+
+/* --- 修改 .cake-wrapper (整体上移) --- */
+.cake-wrapper {
+  position: relative;
+  transform: scale(2.4); 
+  transform-origin: center center;
+  /* 将 top 从 100px 改为 0px 或 20px，让整个蛋糕往屏幕上方移动 */
+  top: 20px; 
+}
+
+/* --- 修改 #cake (蛋糕本体上移找蜡烛) --- */
+#cake {
+  display: block;
+  position: relative;
+  /* 核心修改：将 -8em 改为 -220px (约 -14em) */
+  /* 这个负值越大，蛋糕越往上跑，直到接触到蜡烛底部 */
+  margin-top: -220px; 
+  margin-bottom: 0px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* ============================================== Candle
+*/
+.bg {
+  width: 100%;
+  height: 100vh;
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%);
+  background-attachment: fixed;
+  background-size: cover;
+}
+
+.velas {
+  background: #ffffff;
+  border-radius: 10px;
+  position: absolute; /* 改为绝对定位 */
+  top: -100px;         /* 这个数值控制蜡烛的垂直位置，数值越大越往下 */
+  opacity: 0;
+  left: 50%;          /* 水平居中 */
+  transform: translateX(-50%); /* 修正水平居中的偏移 */
+  width: 5px;
+  height: 35px;
+  z-index: 50;        /* 确保蜡烛在蛋糕图层上面 */
+
+  animation: candleDrop 1s ease-out 7s forwards;
+}
+
+@keyframes candleDrop {
+  0% {
+    top: -100px; /* 开始位置：屏幕上方 */
+    opacity: 0;  /* 开始透明度 */
+  }
+  100% {
+    /* 结束位置：这里需要设置成你觉得正好插在蛋糕上的位置 */
+    /* 根据你之前的代码，260px 是一个参考值，你可以根据实际效果微调这个数字 */
+    top: 380px; 
+    opacity: 1;  /* 结束时完全不透明 */
+  }
+}
+
+.velas:after,
+.velas:before {
+  background: rgba(255, 0, 0, 0.4);
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 2.22222222px;
+}
+
+.velas:after {
+  top: 25%;
+  left: 0;
+}
+
+.velas:before {
+  top: 45%;
+  left: 0;
+}
+
+/* ============================================== Fire
+*/
+.fuego {
+  border-radius: 100%;
+  position: absolute;
+  top: -20px;
+  left: 70%;
+  margin-left: -2.2px;
+  width: 6.66666667px;
+  height: 18px;
+}
+
+.fuego:nth-child(1) {
+  -webkit-animation: fuego 2s 8s infinite;
+  animation: fuego 2s 8s infinite;
+}
+
+.fuego:nth-child(2) {
+  -webkit-animation: fuego 1.5s 8s infinite;
+  animation: fuego 1.5s 8s infinite;
+}
+
+.fuego:nth-child(3) {
+  -webkit-animation: fuego 1s 8s infinite;
+  animation: fuego 1s 8s infinite;
+}
+
+.fuego:nth-child(4) {
+  -webkit-animation: fuego 0.5s 8s infinite;
+  animation: fuego 0.5s 8s infinite;
+}
+
+.fuego:nth-child(5) {
+  -webkit-animation: fuego 0.2s 8s infinite;
+  animation: fuego 0.2s 8s infinite;
+}
+
+/* ============================================== Animation Fire
+*/
+@-webkit-keyframes fuego {
+  0%, 100% {
+    background: rgba(254, 248, 97, 0.5);
+    -webkit-box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    -webkit-transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    background: rgba(255, 50, 0, 0.1);
+    -webkit-box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    -webkit-transform: translateY(-20px) scale(0);
+    transform: translateY(-20px) scale(0);
+  }
+}
+@keyframes fuego {
+  0%, 100% {
+    background: rgba(254, 248, 97, 0.5);
+    -webkit-box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    box-shadow: 0 0 40px 10px rgba(248, 233, 209, 0.2);
+    -webkit-transform: translateY(0) scale(1);
+    transform: translateY(0) scale(1);
+  }
+
+  50% {
+    background: rgba(255, 50, 0, 0.1);
+    -webkit-box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    box-shadow: 0 0 40px 20px rgba(248, 233, 209, 0.2);
+    -webkit-transform: translateY(-20px) scale(0);
+    transform: translateY(-20px) scale(0);
+  }
+}
+@-webkit-keyframes in {
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+@keyframes in {
+  to {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+  }
+}
+
+.come {
+	animation-delay:0.4s;
+	animation:coming 2s;
+	opacity:1;
+}
+@keyframes coming{
+	from{
+		opacity:0;
+	}
+	to {
+		opacity:1;
+	}
+}
+@-webkit-keyframes coming{
+	from{
+		opacity:0;
+	}
+	to {
+		opacity:1;
+	}
+}
+
+.bg-bubbles {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+.bg-bubbles li {
+  position: absolute;
+  list-style: none;
+  display: block;
+  width: 50px;
+  height: 50px;
+  /* 1. 保持原来的半透明白色作为默认底色 */
+  background-color: rgba(255, 255, 255, 0.15); 
+  /* 2. 新增：确保动图能完整显示 */
+  background-size: cover; 
+  background-position: center;
+  background-repeat: no-repeat;
+  bottom: -160px;
+  -webkit-animation: square 30s infinite;
+  animation: square 30s infinite;
+  -webkit-transition-timing-function: linear;
+  transition-timing-function: linear;
+  /* 3. 可选：给图片加一点圆角，看起来更柔和 */
+  border-radius: 10px;
+}
+.bg-bubbles li:nth-child(1) {
+  left: 10%;
+}
+.bg-bubbles li:nth-child(2) {
+  left: 20%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图1.gif");
+  background-color: transparent;
+  -webkit-animation-delay: 2s;
+          animation-delay: 2s;
+  -webkit-animation-duration: 12s;
+          animation-duration: 12s;
+}
+.bg-bubbles li:nth-child(3) {
+  left: 30%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图2.gif");
+  background-color: transparent;
+  -webkit-animation-delay: 5s;
+          animation-delay: 5s;
+  -webkit-animation-duration: 14s;
+          animation-duration: 14s;
+}
+.bg-bubbles li:nth-child(4) {
+  left: 40%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图3.gif");
+  background-color: transparent;
+  -webkit-animation-delay: 8s;
+          animation-delay: 8s;
+  -webkit-animation-duration: 15s;
+          animation-duration: 15s;
+}
+.bg-bubbles li:nth-child(5) {
+  left: 50%;
+  width: 80px;
+  height: 80px;
+  -webkit-animation-delay: 3s;
+          animation-delay: 3s;
+  -webkit-animation-duration: 18s;
+          animation-duration: 18s;
+}
+.bg-bubbles li:nth-child(6) {
+  left: 60%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图3.gif");
+  background-color: transparent;
+  -webkit-animation-delay:6s;
+          animation-delay: 6s;
+  -webkit-animation-duration: 19s;
+          animation-duration: 19s;
+}
+.bg-bubbles li:nth-child(7) {
+  left: 70%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图4.gif");
+  background-color: transparent;
+  -webkit-animation-delay:3s;
+          animation-delay: 3s;
+  -webkit-animation-duration: 19s;
+          animation-duration: 19s;
+}
+.bg-bubbles li:nth-child(8) {
+  left: 80%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图4.gif");
+  background-color: transparent;
+  -webkit-animation-delay:4s;
+          animation-delay: 4s;
+  -webkit-animation-duration: 19s;
+          animation-duration: 19s;
+}
+.bg-bubbles li:nth-child(9) {
+  left: 90%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图1.gif");
+  background-color: transparent;
+  -webkit-animation-delay:8s;
+          animation-delay: 8s;
+  -webkit-animation-duration: 19s;
+          animation-duration: 19s;
+}
+.bg-bubbles li:nth-child(10) {
+  left: 100%;
+  width: 80px;
+  height: 80px;
+  background-image: url("../img/动图2.gif");
+  background-color: transparent;
+  -webkit-animation-delay:5s;
+          animation-delay: 5s;
+  -webkit-animation-duration: 19s;
+          animation-duration: 19s;
+}
+
+@-webkit-keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-900px) rotate(600deg);
+            transform: translateY(-900px) rotate(600deg);
+  }
+}
+@keyframes square {
+  0% {
+    -webkit-transform: translateY(0);
+            transform: translateY(0);
+  }
+  100% {
+    -webkit-transform: translateY(-900px) rotate(600deg);
+            transform: translateY(-900px) rotate(600deg);
+  }
+}
+
+.happy {
+	position:absolute;
+	left:41%;
+	top:49%;
+	opacity: 1;
+	animation: happybirthdays 10s;
+	animation-delay: 0s;
+}
+@keyframes happybirthdays {
+	0% {
+		position:absolute;
+		top:45%;
+		opacity: 0;
+	}
+	70% {
+		position:absolute;
+		top:45%;
+		opacity: 0;
+	}
+	100% {
+		position:absolute;
+		top:49%;
+		opacity: 1;
+	}
+}
+@-webkit-keyframes happybirthdays {
+	0% {
+		position:absolute;
+		top:45%;
+		opacity: 0;
+	}
+	70% {
+		position:absolute;
+		top:45%;
+		opacity: 0;
+	}
+	100% {
+		position:absolute;
+		top:49%;
+		opacity: 1;
+	}
+}
+
+.button-style1 ,.button-style2{
+	position:absolute;
+	top:70%;
+	opacity:1;
+	z-index:100;
+}
+.button-style1 {
+	position:absolute;
+	left:25%;
+	animation:btn1 15s;
+}
+.button-style2 {
+	position:absolute;
+	right:25.5%;
+	animation:btn2 15s;
+}
+@keyframes btn1 {
+	0% {
+		opacity:0;
+		left:0.5%;
+	}
+	70% {
+		opacity:0;
+		left:15.5%;
+	}
+	100% {
+		opacity:1;
+		left:25.5%;
+	}
+}
+@-webkit-keyframes btn1 {
+	0% {
+		opacity:0;
+		left:0.5%;
+	}
+	70% {
+		opacity:0;
+		left:15.5%;
+	}
+	100% {
+		opacity:1;
+		left:25.5%;
+	}
+}
+@keyframes btn2 {
+  0% {
+		opacity:0;
+		right:0.5%;
+	}
+	70% {
+		opacity:0;
+		right:15.5%;
+	}
+	100% {
+		opacity:1;
+		right:25.5%;
+	}
+}
+@-webkit-keyframes btn2 {
+	0% {
+		opacity:0;
+		right:0.5%;
+	}
+	70% {
+		opacity:0;
+		right:15.5%;
+	}
+	100% {
+		opacity:1;
+		right:25.5%;
+	}
+}
+.lk1,.lk2 {
+	text-decoration:none;
+	font-family: Microsoft YaHei;
+	color:#fff;
+	transition:all 0.5s;
+}
+.link1,.link2 {
+	width:170px;
+	height:60px;
+	border:2px solid #fff;
+	-webkit-border:1px solid #fff;
+	border-radius:30px;
+	font-size: 23px;
+	text-align:center;
+	background: #ee9ca7;
+	transition:all 0.8s;
+}
+.link2 {
+	cursor:not-allowed;
+}
+.bt1,.bt2 {
+	position:relative;
+	top:22%;
+	vertical-align:middle;
+}
+/* --- 新增标题样式 --- */
+.happy-text {
+  position: absolute;
+  /* top: 60% 表示在屏幕高度 60% 的位置，正好在蛋糕下方 */
+  top: 60%; 
+  width: 100%;
+  text-align: center; /* 文字居中 */
+  color: #fff;
+  font-family: "HanYiShangWei", "YuWei", cursive;
+  font-size: 4em; /* 字体大小 */
+  text-shadow: 0 0 10px rgba(255, 192, 203, 0.8);
+  z-index: 100;
+  opacity: 0;
+  animation: textFadeIn 4s forwards;
+}
+
+@keyframes textFadeIn {
+  0% { opacity: 0; transform: translateY(-20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+/* ============================================== 
+   New Journey Button (Dreamy Style)
+   梦幻风格“继续旅程”按钮
+*/
+
+/* 按钮容器：负责位置和动画 */
+.journey-button-container {
+  position: absolute;
+  width: 100%;
+  bottom: -100px; /* 初始状态在屏幕下方看不见的位置 */
+  text-align: center; /* 让按钮水平居中 */
+  z-index: 100;
+  
+  /* 动画设置：
+     riseUp: 名字
+     2s: 上升过程持续2秒，慢一点更优雅
+     ease-out: 缓出，结束时变慢
+     9s: 延迟9秒开始（因为蜡烛8秒才点燃，按钮9秒出来正好接上）
+     forwards: 动画结束后停留在最终位置
+  */
+  animation: riseUp 2s ease-out 9s forwards;
+}
+
+/* 按钮本体样式 */
+.journey-link {
+  display: inline-block;
+  text-decoration: none;
+  font-family: "HanYiShangWei", "YuWei", cursive; /* 使用你的艺术字体 */
+  font-size: 28px; /* 字体大一点 */
+  color: #fff;
+  padding: 15px 50px; /* 按钮内边距，让它看起来宽一点 */
+  
+  /* 梦幻核心：半透明白色背景 + 模糊滤镜（毛玻璃效果） */
+  background: rgba(255, 255, 255, 0.25); 
+  backdrop-filter: blur(5px); 
+  -webkit-backdrop-filter: blur(5px);
+  
+  border: 1px solid rgba(255, 255, 255, 0.6); /* 半透明亮边框 */
+  border-radius: 50px; /* 圆角胶囊形状 */
+  
+  /* 柔和的粉色发光投影 */
+  box-shadow: 0 4px 15px rgba(255, 192, 203, 0.5); 
+  
+  transition: all 0.3s ease; /* 鼠标悬停时的过渡效果 */
+  letter-spacing: 2px; /* 字间距稍微拉开一点 */
+}
+
+/* 鼠标悬停交互效果 */
+.journey-link:hover {
+  background: rgba(255, 255, 255, 0.45); /* 变亮 */
+  transform: scale(1.05) translateY(-3px); /* 稍微放大并上浮 */
+  box-shadow: 0 10px 25px rgba(255, 192, 203, 0.8); /* 投影变强 */
+  text-shadow: 0 0 10px rgba(255, 255, 255, 1); /* 文字发光 */
+}
+
+/* 定义从下往上升起的动画 */
+@keyframes riseUp {
+  0% {
+    bottom: -100px;
+    opacity: 0;
+  }
+  100% {
+    bottom: 15%; /* 最终停留在距离底部 15% 的位置 */
+    opacity: 1;
+  }
+}

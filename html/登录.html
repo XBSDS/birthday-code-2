@@ -1,0 +1,173 @@
+<!doctype html>
+<html lang="zh">
+
+<head>
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Happy Birthday</title>
+	<link rel="stylesheet" type="text/css" href="../css/styles.css">
+	<link rel="stylesheet" type="text/css" href="../css/字体.css">
+
+	<style>
+        /* 1. 让整个页面背景透明，透出底下的视频 */
+        body, .htmleaf-container, .wrapper {
+            background: transparent !important; /* 强制去除去原有的粉色/渐变背景 */
+            height: 100vh;
+            overflow: hidden;
+        }
+
+        /* 2. 调整内容容器居中 */
+        .wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        /* 3. 登录框主体：毛玻璃特效 */
+        .container {
+            background: rgba(255, 255, 255, 0.15); /* 半透明白 */
+            backdrop-filter: blur(10px); /* 模糊背景，产生磨砂感 */
+            -webkit-backdrop-filter: blur(10px); /* 兼容 Safari */
+            border: 1px solid rgba(255, 255, 255, 0.3); /* 细微的高光边框 */
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37); /* 柔和的投影 */
+            border-radius: 20px; /* 圆角 */
+            padding: 40px;
+            max-width: 400px;
+			position: relative; 
+			z-index: 100;
+        }
+
+        /* 4. 文字美化 */
+        h1 {
+            color: #ffffff;
+            text-shadow: 0 2px 5px rgba(0,0,0,0.3); /* 文字投影防吞字 */
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        /* 5. 输入框美化 */
+        form input {
+            background: rgba(255, 255, 255, 0.2) !important; /* 输入框也半透明 */
+            border: 1px solid rgba(255, 255, 255, 0.5) !important;
+            color: #fff !important;
+            border-radius: 30px !important; /* 更圆润 */
+        }
+        
+        /* 修改 placeholder 颜色 */
+        form input::placeholder {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* 6. 按钮美化 */
+        #login-button {
+            background: linear-gradient(135deg, #fbc2eb 0%, #a6c1ee 100%); /* 梦幻渐变色 */
+            border: none;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            font-weight: bold;
+            letter-spacing: 2px;
+            border-radius: 30px;
+            transition: transform 0.2s;
+        }
+        #login-button:hover {
+            transform: scale(1.05); /* 悬停微放大 */
+        }
+		/* 1. 气泡基础样式重构 */
+		.bg-bubbles li {
+			/* 变圆 */
+			border-radius: 50%;
+			
+			/* 移除原本的纯白背景，改为梦幻的半透明渐变 */
+			background: radial-gradient(circle at 30% 30%, 
+				rgba(255, 255, 255, 0.9) 0%, 
+				rgba(255, 255, 255, 0.2) 20%, 
+				rgba(255, 255, 255, 0.05) 100%);
+				
+			/* 增加气泡边缘的高光质感 */
+			border: 1px solid rgba(255, 255, 255, 0.4);
+			box-shadow: 0 0 10px rgba(255, 255, 255, 0.2), inset 0 0 10px rgba(255, 255, 255, 0.1);
+			/* 增加一点毛玻璃效果，让气泡看起来更有实体感 */
+			backdrop-filter: blur(1px); 
+		}
+		/* 2. 为不同的气泡添加梦幻色彩 (利用 nth-child) */
+		/* 1号和2号气泡：梦幻粉色 */
+		.bg-bubbles li:nth-child(1),
+		.bg-bubbles li:nth-child(2) {
+			box-shadow: 0 0 20px rgba(255, 182, 193, 0.6), inset 0 0 10px rgba(255, 182, 193, 0.4);
+			border-color: rgba(255, 182, 193, 0.5);
+		}
+
+		/* 3号和4号气泡：静谧蓝色 */
+		.bg-bubbles li:nth-child(3),
+		.bg-bubbles li:nth-child(4) {
+			box-shadow: 0 0 20px rgba(135, 206, 250, 0.6), inset 0 0 10px rgba(135, 206, 250, 0.4);
+			border-color: rgba(135, 206, 250, 0.5);
+		}
+
+		/* 5号和6号气泡：神秘紫色 */
+		.bg-bubbles li:nth-child(5),
+		.bg-bubbles li:nth-child(6) {
+			box-shadow: 0 0 20px rgba(221, 160, 221, 0.6), inset 0 0 10px rgba(221, 160, 221, 0.4);
+			border-color: rgba(221, 160, 221, 0.5);
+		}
+
+		/* 7号及以后的气泡：暖暖的鹅黄色/白色 */
+		.bg-bubbles li:nth-child(n+7) {
+			box-shadow: 0 0 20px rgba(255, 250, 205, 0.5), inset 0 0 10px rgba(255, 255, 255, 0.3);
+		}
+
+    </style>
+</head>
+
+<body>
+	<div class="htmleaf-container">
+		<div class="wrapper">
+			<div class="container">
+				<h1>生日快乐</h1>
+				<form class="form">
+					<input id="userName" name="userName" type="text" placeholder="0000" value="叉叉叉"><!--随便输入密码无所谓-->
+					<input id="pwd" name="pwd" type="password" placeholder="祝你生日快乐">
+					<button type="button" id="login-button">进入</button>
+				</form>
+			</div>
+			<ul class="bg-bubbles">
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+				<li></li>
+			</ul>
+		</div>
+	</div>
+
+	<script src="../js/jquery-2.1.1.min.js" type="text/javascript"></script>
+	<script>
+    // 在 login.html 的 script 标签中
+	$('#login-button').click(function (event) {
+		// 1. 请求全屏（保持原有逻辑）
+		if (window.parent) {
+			window.parent.postMessage('requestFullScreen', '*');
+		}
+
+		// 2. 动画效果（保持原有逻辑）
+		$('form').fadeOut(500);
+		$('.wrapper').addClass('form-success');
+		
+		// 3. 延迟后，通知父页面切换内容（这是核心修改！）
+		setTimeout(function () {
+			if (window.parent) {
+				// 发送一个新的消息 'switchToIndex1'
+				window.parent.postMessage('switchToIndex1', '*');
+			}
+		}, 1000); 
+	});
+</script>
+</body>
+
+</html>
