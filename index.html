@@ -1,0 +1,174 @@
+<audio src="../music/2.mp3" autoplay="autoplay" loop="loop"></audio>
+<!doctype html>
+<html lang="zh">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday</title>
+    <link rel="stylesheet" type="text/css" href="css/styles.css">
+</head>
+
+<style>
+    @font-face {
+    font-family: "HanYiShangWei";
+    src: url("../字体/汉仪尚巍手书W.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+    @font-face {
+    font-family: "YuWei";
+    src: url("../字体/禹卫书法行书简体.ttf") format("truetype");
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+    html, body {
+        margin: 0;
+        padding: 0;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        font-family: "Microsoft YaHei", "Heiti SC", sans-serif; /* 统一字体 */
+    }
+
+    /* 视频背景容器：绝对定位，铺满全屏，层级最低 */
+    .video-container {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1; /* 放在最底层 */
+    }
+    
+    /* 视频本身：保持比例覆盖，适当加一点滤镜让文字更清楚 */
+    .video-container video {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        filter: brightness(0.9); /* 稍微调暗一点，防止背景太亮看不清字 */
+    }
+
+    /* Iframe 容器：绝对定位，居中显示，层级在视频之上 */
+    #iframepage {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: 10;
+        background: transparent; /* 关键：背景透明 */
+        border: none;
+    }
+</style>
+
+<body>
+    <div class="video-container">
+        <video id="bgVideo" autoplay loop playsinline>
+            <source src="./video/Try everything.mp4" type="video/mp4">
+            您的浏览器不支持 HTML5 视频。
+        </video>
+    </div>
+    
+    <!--<iframe src="./html/登录.html" id="iframepage" scrolling="no" frameborder="0" allowtransparency="true" allow="fullscreen"></iframe> -->
+    <iframe 
+    src="./html/登录.html" 
+    id="iframepage" 
+    scrolling="no" 
+    frameborder="0" 
+    allowtransparency="true" 
+    allow="autoplay *; fullscreen *; encrypted-media *"
+    webkitallowfullscreen="true"
+    mozallowfullscreen="true"
+    allowfullscreen="true">
+    </iframe>
+    <script src="js/jquery-2.1.1.min.js" type="text/javascript"></script>
+    <script src="js/jquery-1.8.4.min.js" type="text/javascript"></script>
+    
+    <script type="text/javascript">
+        // --- 全屏功能函数 ---
+        function toggleFullScreen() {
+            var doc = window.document;
+            var docEl = doc.documentElement;
+
+            var requestFullScreen = docEl.requestFullscreen || docEl.mozRequestFullScreen || docEl.webkitRequestFullScreen || docEl.msRequestFullscreen;
+            
+            if (!doc.fullscreenElement && !doc.mozFullScreenElement && !doc.webkitFullscreenElement && !doc.msFullscreenElement) {
+                if (requestFullScreen) {
+                    requestFullScreen.call(docEl);
+                }
+            }
+        }
+
+        // --- 核心：消息监听器 ---
+        window.addEventListener('message', function(event) {
+            var iframe = document.getElementById("iframepage");
+            var videoContainer = document.querySelector('.video-container');
+            var video = document.getElementById('bgVideo');
+
+            // 1. 处理全屏请求
+            if (event.data === 'requestFullScreen') {
+                toggleFullScreen();
+            }
+            
+            // 2. 处理跳转请求（保持全屏的关键！）
+            if (event.data === 'switchToIndex1') {
+                // A. 确保已经全屏
+                toggleFullScreen(); 
+
+                // B. 隐藏背景视频（粒子特效通常需要深色背景）
+                if(videoContainer) {
+                    $(videoContainer).fadeOut(1000); // 慢慢消失
+                    if(video) video.pause();         // 停止视频播放
+                }
+
+                // C. 切换 iframe 的内容，而不是跳转整个网页
+                // 这样浏览器认为还在同一个页面，就不会退出全屏
+                iframe.src = "./html/index1.html";
+                
+                // D. 确保 iframe 重新获得焦点，保证键盘交互可用
+                setTimeout(function(){
+                    iframe.focus();
+                }, 500);
+            }
+        });
+
+        // --- 窗口大小自适应 ---
+        function changeFrameHeight() {
+            var ifm = document.getElementById("iframepage");
+            if(ifm) {
+                ifm.height = document.documentElement.clientHeight;
+            }
+        }
+        window.onresize = function() {
+            changeFrameHeight();
+        }
+        
+        // --- 初始化视频播放逻辑 ---
+        document.addEventListener('DOMContentLoaded', function() {
+            changeFrameHeight(); // 初始化高度
+            
+            var video = document.getElementById('bgVideo');
+            // 尝试自动播放
+            video.play().catch(function(error) {
+                // 如果自动播放失败，添加点击遮罩
+                var tipElement = document.createElement('div');
+                tipElement.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);z-index:9999;display:flex;justify-content:center;align-items:center;cursor:pointer;color:#fff;font-size:24px;font-weight:bold;';
+                tipElement.innerHTML = '<p>点击屏幕任意位置开启生日惊喜 ✨</p>';
+                document.body.appendChild(tipElement);
+                
+                tipElement.addEventListener('click', function() {
+                    toggleFullScreen();
+                    video.play();
+                    video.muted = false;
+                    tipElement.parentNode.removeChild(tipElement);
+                });
+            });
+        });
+</script>
+</body>
+
+</html>

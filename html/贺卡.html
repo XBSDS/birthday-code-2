@@ -190,24 +190,48 @@
         /* 烟花层要在最上面 */
         .fireworks { z-index: 20; }
 
-        /* 浮现图片样式 (原有) */
+        /* --- 浮现图片样式 (修改版：飘落的明信片) --- */
         .floating-image {
             position: absolute;
-            width: 150px; height: 150px;
-            border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.9);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            width: 140px; /* 稍微调小一点，精致一些 */
+            height: auto; /* 高度自适应 */
+            max-height: 140px;
+            
+            /* 核心修改：拍立得风格 */
+            border: 6px solid #fff; /* 白色边框 */
+            border-bottom-width: 15px; /* 底部边框加厚，像拍立得 */
+            border-radius: 4px; /* 轻微圆角 */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15); /* 柔和阴影 */
+            background-color: #fff;
+            
             opacity: 0;
-            animation: floatImage 15s linear forwards;
+            top: -200px; /* 初始位置在屏幕上方外面 */
+            
+            /* 动画：飘落 */
+            animation: fallDown linear forwards;
+            
             object-fit: cover;
-            z-index: 30; /* 浮现图片要盖住卡片 */
+            z-index: 4; /* 放在卡片后面，背景气球前面，增加层次感 */
+            pointer-events: none; /* 让鼠标可以穿透图片点击后面的东西 */
         }
 
-        @keyframes floatImage {
-            0% { transform: translateY(100vh) rotate(0deg) scale(0.5); opacity: 0; }
-            10% { opacity: 1; }
-            90% { opacity: 1; }
-            100% { transform: translateY(-200px) rotate(360deg) scale(1.2); opacity: 0; }
+        /* 飘落动画关键帧 */
+        @keyframes fallDown {
+            0% {
+                opacity: 0;
+                transform: translateY(0) translateX(0) rotate(var(--start-rot));
+            }
+            10% {
+                opacity: 0.9; /* 出现 */
+            }
+            80% {
+                opacity: 0.9;
+            }
+            100% {
+                opacity: 0; /* 落地消失 */
+                /* 核心：向下移动到屏幕底部 (120vh)，同时横向轻微位移 */
+                transform: translateY(120vh) translateX(var(--end-x)) rotate(var(--end-rot));
+            }
         }
 
         .particle {
@@ -266,14 +290,15 @@
         </div>
 
         <div class="card-right">
-            <h1 class="greeting-header">To: ❌❌❌</h1>
+            <h1 class="greeting-header">To: ❌❌</h1>
             
             <div class="greeting-content">
-                <span class="paper-line">感谢你短期的陪伴，</span>
-                <span class="paper-line">一路闪闪发光。</span>
-                <span class="paper-line" style="margin-top: 20px;"><b>祝你生日快乐！</b></span>
-                <span class="paper-line">愿时光温柔以待，</span>
-                <span class="paper-line">愿你每一天都活力满满！</span>
+                <span class="paper-line">西安真的是一座很有活力的历史名城，</span>
+                <span class="paper-line">祝愿你与西安古城、与工大学府，</span>
+                <span class="paper-line">在不久的将来如期而遇！</span>
+                <span class="paper-line">愿西安的月和工大的灯，</span>
+                <span class="paper-line">都能照亮你下一段奔赴理想的旅程！</span>
+                <!--<span class="paper-line" style="margin-top: 20px;"><b>祝你生日快乐！</b></span>-->
             </div>
 
             <div class="gift-box-wrapper" onclick="goToEasterEgg()">
@@ -284,14 +309,13 @@
             </div>
     </div>
 
-    <audio id="backgroundMusic" loop>
+    <audio id="backgroundMusic" loop autoplay>
         <source src="../music/月球下的人.mp3" type="audio/mpeg">
     </audio>
 
     <script>
         // --- 保持原有的 JavaScript 逻辑完全不变 ---
         let imageAnimationStarted = false;
-        const maxImages = 10;
         let imageInterval;
         let audioElement;
         let currentImageIndex = 0;
@@ -300,21 +324,40 @@
             audioElement = document.getElementById('backgroundMusic');
             const urlParams = new URLSearchParams(window.location.search);
             const audioTime = urlParams.get('audioTime');
+
+            // 1. 设置播放进度
             if (audioTime) {
                 audioElement.currentTime = parseFloat(audioTime);
             } else {
+                // 如果没有URL参数，尝试读取缓存
                 const savedTime = sessionStorage.getItem('audioCurrentTime');
                 if (savedTime) {
                     audioElement.currentTime = parseFloat(savedTime);
                 }
             }
-            audioElement.play().catch(error => {
-                console.log('自动播放失败，需要交互');
-                document.addEventListener('click', function playOnFirstClick() {
-                    audioElement.play();
-                    document.removeEventListener('click', playOnFirstClick);
-                }, { once: true });
-            });
+
+            // 2. 【核心】尝试暴力自动播放
+            // 我们不等待点击，直接请求播放
+            var playPromise = audioElement.play();
+
+            if (playPromise !== undefined) {
+                playPromise.catch(error => {
+                    console.log('浏览器拦截了自动播放，需要用户交互:', error);
+                    // 3. 【补救措施】
+                    // 如果浏览器真的不让播（比如在微信里），我们没办法强行突破。
+                    // 这里添加一个全屏隐形监听：用户只要碰一下屏幕任何地方（不仅仅是礼物盒），音乐立马响
+                    document.addEventListener('click', function resumePlay() {
+                        audioElement.play();
+                        document.removeEventListener('click', resumePlay);
+                    }, { once: true });
+                    document.addEventListener('touchstart', function resumePlay() {
+                        audioElement.play();
+                        document.removeEventListener('touchstart', resumePlay);
+                    }, { once: true });
+                });
+            }
+
+            // 4. 继续记录时间，为后续可能的刷新做准备
             setInterval(() => {
                 if (audioElement && !audioElement.paused) {
                     sessionStorage.setItem('audioCurrentTime', audioElement.currentTime);
@@ -326,23 +369,66 @@
             if (imageAnimationStarted) return;
             imageAnimationStarted = true;
             const imagesContainer = document.getElementById('floatingImages');
-            showNextImage();
-            imageInterval = setInterval(() => { showNextImage(); }, 2000);
+            
+            // 【新增】开场瞬间先撒一把（立刻生成5张），避免一开始空荡荡的
+            for(let i = 0; i < 5; i++) {
+                setTimeout(() => showNextImage(), i * 300);
+            }
+
+            // 【修改】将时间间隔从 2000 改为 600 (数值越小，图片越多/越密)
+            imageInterval = setInterval(() => { 
+                showNextImage(); 
+                // 偶尔（30%概率）额外再多生成一张，制造错落感
+                if(Math.random() > 0.7) {
+                    setTimeout(() => showNextImage(), 300);
+                }
+            }, 700); 
         }
 
+        // 修改这里为 18 张图片
+        const maxImages = 18; 
+
+       // 2. 修改图片生成与选取函数
         function showNextImage() {
             const imagesContainer = document.getElementById('floatingImages');
-            currentImageIndex = (currentImageIndex % maxImages) + 1;
+            
+            // 【核心修改】改为随机抽取 1 到 18 之间的数字
+            const randomIndex = Math.floor(Math.random() * maxImages) + 1;
+            
             const image = document.createElement('img');
             image.className = 'floating-image';
-            image.src = `../img/流图${currentImageIndex}.jpg`; // 确保路径正确
-            image.style.left = Math.random() * (window.innerWidth - 200) + 'px';
-            image.style.animationDelay = Math.random() * 0.5 + 's';
-            image.style.transform = `rotate(${Math.random() * 360}deg)`;
+            
+            // 使用随机生成的序号
+            image.src = `../img/流图${randomIndex}.jpg`; 
+            
+            // --- 随机参数生成 (保持之前的优化逻辑) ---
+            // 1. 起始水平位置 (0% 到 100%)
+            const startLeft = Math.random() * 100;
+            image.style.left = startLeft + '%';
+            
+            // 2. 动画持续时间 (10秒 到 18秒)
+            const duration = Math.random() * 8 + 10;
+            image.style.animationDuration = duration + 's';
+            
+            // 3. 随机大小 (新增：让图片大小有区别，0.8倍到1.2倍之间)
+            // 这样画面看起来更有层次感，不会像复制粘贴的
+            const scale = Math.random() * 0.4 + 0.8; 
+            image.style.transform = `scale(${scale})`; 
+
+            // 4. 设置 CSS 变量，控制随机的旋转和飘落方向
+            const startRot = (Math.random() * 30 - 15) + 'deg';
+            const endRot = (Math.random() * 90 - 45) + 'deg';
+            const endX = (Math.random() * 200 - 100) + 'px';
+
+            image.style.setProperty('--start-rot', startRot);
+            image.style.setProperty('--end-rot', endRot);
+            image.style.setProperty('--end-x', endX);
             
             image.onerror = function() { this.style.display = 'none'; };
             imagesContainer.appendChild(image);
-            setTimeout(() => { if (image.parentNode) image.remove(); }, 15000);
+            
+            // 动画结束后移除元素
+            setTimeout(() => { if (image.parentNode) image.remove(); }, duration * 1000);
         }
 
         function createParticles() {
@@ -373,13 +459,49 @@
             playBirthdaySong();
         }
 
-        function goToEasterEgg(){
+        function goToEasterEgg() {
+            // 1. 立即启动视觉特效 (保持不变)
             createFireworks();
             setTimeout(() => { createFloatingImages(); }, 1000);
+            
+            // --- 时间配置 ---
+            const totalWaitTime = 25000; // 总等待时间：25000毫秒 (25秒)
+            const fadeDuration = 1000;   // 淡出持续时间：1000毫秒 (1秒)
+            // 计算何时开始淡出：总时间 - 淡出时间 (25000 - 1000 = 24000)
+            const fadeStartTime = totalWaitTime - fadeDuration; 
+
+            // 2. 【核心修改】设置定时器，在最后1秒才开始淡出音乐
+            setTimeout(() => {
+                fadeOutAudio(fadeDuration); 
+            }, fadeStartTime);
+
+            // 3. 页面跳转 (时间到了就跳)
             setTimeout(() => {
                 if (imageInterval) clearInterval(imageInterval);
-                window.location.href='../html/彩蛋原版.html'; // 确保路径正确
-            }, 8000); // 缩短一点跳转时间，原版20秒可能太长，建议改为5-8秒体验更好
+                window.location.href = '../html/彩蛋原版.html'; 
+            }, totalWaitTime); 
+        }
+
+        // 【新增】音乐淡出专用函数
+        function fadeOutAudio(duration) {
+            // 使用你代码里定义的全局变量 audioElement
+            if (!audioElement || audioElement.paused) return;
+
+            var currentVolume = audioElement.volume; // 获取当前音量
+            var interval = 50; // 每50毫秒调整一次
+            var step = currentVolume / (duration / interval); // 计算每一步减多少音量
+
+            var fadeTimer = setInterval(function() {
+                if (audioElement.volume > 0.05) { // 如果音量还大于 0.05
+                    // 防止计算误差导致音量小于0报错
+                    audioElement.volume = Math.max(0, audioElement.volume - step);
+                } else {
+                    // 音量已经很小了，直接静音并清除定时器
+                    audioElement.volume = 0;
+                    audioElement.pause();
+                    clearInterval(fadeTimer);
+                }
+            }, interval);
         }
 
         function playBirthdaySong() {

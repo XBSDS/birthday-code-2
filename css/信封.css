@@ -32,7 +32,7 @@ body {
 
 /* ================== 核心修改：信封主体 ================== */
 .card {
-    width: 700px;
+    width: 800px;
     height: 450px;
     
     /* 1. 结构修改：底部改为平整的矩形背景，不再需要 ::after 伪元素 */
@@ -181,8 +181,6 @@ body {
 .txt p:nth-child(4){
     font-size: 35px;
 }
-/* ================== 第二屏：信纸/内容区域 ================== */
-/* 修复：之前丢失了这段样式，导致背景出不来，文字错位 */
 
 /* ================== 第二屏：信纸/内容区域 ================== */
 #box {
@@ -195,45 +193,73 @@ body {
     opacity: 0; 
     transition: opacity 2s ease-in-out; 
 
-    /* === 核心修改：布局方式 === */
     display: flex;
     flex-direction: column;
-    
-    /* 1. 垂直方向：改为从顶部开始 (消除垂直晃动) */
-    justify-content: flex-start; 
-    
-    /* 2. 水平方向：改为左对齐 (消除水平晃动) */
-    align-items: flex-start;     
-    
-    /* 3. 文本对齐：强制文字左对齐 */
+    justify-content: flex-start;   
     text-align: left;            
-
-    /* === 核心修改：边距控制 (控制书写范围) === */
-    /* 上边距 15vh: 让第一行字出现在距离屏幕顶部 15% 的位置，而不是贴顶 */
-    /* 左右边距 20vw: 给左右留出足够的空白，模仿信纸的页边距 */
     padding: 15vh 15vw 5vh 15vw; 
-    
     box-sizing: border-box;
 
     /* 背景设置 */
-    background-image: url(../img/bac.jpg); 
-    background-size: cover;
-    background-position: center;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-image: 
+        /* 第1层：噪点纹理 (模拟老电影/胶片颗粒感) */
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.08'/%3E%3C/svg%3E"),
+        
+        /* 第2层：径向渐变 (模拟暗角/暗室效果，中间亮四周黑，非常有氛围) */
+        radial-gradient(circle at center, rgba(0,0,0,0.3) 0%, rgba(0,0,0,0.7) 100%),
+        
+        /* 第3层：你的背景图 (请确保路径和文件名正确) */
+        url(../img/咖啡店.png); 
+    background-size: auto, cover, cover; /* 噪点平铺，遮罩和原图拉伸 */
+    background-position: 0 0, center, center;
+    background-repeat: repeat, no-repeat, no-repeat;
     
-    /* 文字样式 */
-    color: #2c3e50; 
-    text-shadow: 0 0 5px rgba(255, 255, 255, 0.9), 0 1px 1px rgba(0,0,0,0.1);
+    /* 混合模式：让噪点叠加在画面上，让遮罩压暗背景 */
+    background-blend-mode: overlay, normal, normal;
+    
+    /* 备用背景色 */
+    background-color: #1a1a1a;
+
+/* ============ 字体优化：复古白 ============ */
+    /* 纯白太刺眼，稍微降一点透明度，更有质感 */
+    color: rgba(255, 255, 255, 0.95);
+    
+    /* 阴影优化：用柔和的弥散阴影代替生硬的黑边，让字像浮在空气中 */
+    text-shadow: 0 2px 5px rgba(0, 0, 0, 0.8);
+
     font-size: 34px;  
     font-weight: normal;
     font-family: 'HanYiShangWei', 'YuWei', "楷体", cursive;
     line-height: 2.1; 
     word-wrap: break-word;
-    overflow-y: auto; /* 内容过多时允许滚动 */
+    overflow-y: auto; 
     letter-spacing: 2px;
-    
-    /* 可选：增加首行缩进，更像写作文 */
-    /* text-indent: 2em; */ 
+}
+/* 优化滚动条 (Webkit浏览器)，让它不破坏复古感 */
+#box::-webkit-scrollbar {
+    width: 6px;
+}
+#box::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 3px;
+}
+#box::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+/* === 修改重点 2：段落样式 === */
+/* 让每一段（p标签）都首行缩进两个字 */
+#box p {
+    text-indent: 2em; 
+    margin: 0;         /* 去掉默认间距，由JS控制空行 */
+    padding-bottom: 20px; /* 每段之间留一点空隙 */
+}
+
+/* === 修改重点 3：署名样式 === */
+/* 右对齐的类 */
+#box .right-align {
+    text-align: right;
+    text-indent: 0; /* 署名不需要缩进 */
 }
 /* 2. 给文字和印章也添加过渡，翻开时让它们淡出 */
 .card .text,
@@ -288,4 +314,50 @@ body {
 .card.open .click-hint {
     opacity: 0;
     transition: opacity 0.5s ease;
+}
+/* ================== 通用图片插入样式 ================== */
+
+/* 1. 单张图片容器 (保持不变) */
+.inserted-img-box {
+    width: 100%;
+    display: flex;
+    justify-content: center; 
+    margin: 15px 0;
+}
+
+/* 2. 新增：双张图片容器 (左右并排) */
+.double-img-box {
+    width: 100%;
+    display: flex;
+    justify-content: space-between; /* 左右两端对齐，中间留空 */
+    align-items: center;
+    margin: 15px 0;
+    gap: 10px; /* 两张图之间的间隙 */
+}
+
+/* 单张图片样式 (保持不变) */
+.inserted-img {
+    max-width: 90%; 
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    /*opacity: 0;
+    animation: fadeInImg 1.5s forwards;*/
+    transition: all 0.5s ease;
+}
+
+/* 新增：双图模式下的图片样式 (宽度设为48%以放得下两张) */
+.double-img-item {
+    width: 48%; /* 两个加起来 < 100% */
+    height: auto;
+    border-radius: 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    /*opacity: 0;
+    animation: fadeInImg 1.5s forwards;*/
+    object-fit: cover;
+    transition: all 0.5s ease;
+}
+
+@keyframes fadeInImg {
+    to { opacity: 1; }
 }
