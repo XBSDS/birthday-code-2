@@ -34,6 +34,7 @@
 **music文件夹**里存放着所需的背景音乐；
 **video文件夹**里存放着开头登录界面内嵌的视频和结尾内嵌的视频；
 **字体文件夹**里存放着好看的字体文件。
+
 <img width="622" height="425" alt="image" src="https://github.com/user-attachments/assets/a4e0e96e-5547-43db-be44-9d2305dffde4" />
 # 3.代码简要说明和修改建议 #
 ## 3.1第一幕修改 ##
