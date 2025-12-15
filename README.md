@@ -36,6 +36,7 @@
 **字体文件夹**里存放着好看的字体文件。
 
 <img width="622" height="425" alt="image" src="https://github.com/user-attachments/assets/a4e0e96e-5547-43db-be44-9d2305dffde4" />
+
 # 3.代码简要说明和修改建议 #
 ## 3.1第一幕修改 ##
 在**html文件夹**中的**登录.html**文件中，图中标红框的可以去修改文字内容；
