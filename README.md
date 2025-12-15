@@ -25,4 +25,53 @@
 ### 1.7第七幕 ###
 这是最后一幕，背景是**月夜**图片，放上了关于《白日梦想家》的一个视频，该视频可以全屏播放，跟正常播放设置的差不多，基本三四个按钮都有，感觉放在最后能再次给人一种对于美好明天的期待感，同时也在不经意暗示”这一天的生日快过去了“，明天又是未知的一天，但请一定不要把自己束缚住，敢于打破局限，为自己的生活增添彩色！
 <img width="2549" height="1403" alt="image" src="https://github.com/user-attachments/assets/ba5338cf-9801-403f-8fd8-be167aa64147" />
-# 2.代码简要说明和修改建议 #
+# 2.文件分布大致概述 #
+**index.html**文件是开头登录文件；
+**css文件夹**里均存放着css文件 ；
+**html文件夹**里均存放着html文件；
+**js文件夹**里均存放着js文件；
+**img文件夹**里存放着所有的背景图片和修饰图片；
+**music文件夹**里存放着所需的背景音乐；
+**video文件夹**里存放着开头登录界面内嵌的视频和结尾内嵌的视频；
+**字体文件夹**里存放着好看的字体文件。
+<img width="622" height="425" alt="image" src="https://github.com/user-attachments/assets/a4e0e96e-5547-43db-be44-9d2305dffde4" />
+# 3.代码简要说明和修改建议 #
+## 3.1第一幕修改 ##
+在**html文件夹**中的**登录.html**文件中，图中标红框的可以去修改文字内容；
+<img width="2560" height="1528" alt="image" src="https://github.com/user-attachments/assets/f46124b8-0106-4638-9f6c-0f67796c46e2" />
+在**index.html**文件中，修改图中标红框的部分可以修改开头的内嵌视频。
+<img width="2560" height="1495" alt="image" src="https://github.com/user-attachments/assets/484eed5c-1bbc-496d-8ba6-cbd0d508dc42" />
+## 3.2第二幕修改 ##
+在**html文件夹**中的**index1.html**中，红色标框处可以修改成自己喜欢的音乐；
+<img width="2556" height="1479" alt="image" src="https://github.com/user-attachments/assets/dce02167-e872-4aef-b0fc-6267085e4f44" />
+同文件下，这一行可以修改背景图片；
+<img width="2560" height="1500" alt="image" src="https://github.com/user-attachments/assets/79296d47-0a09-42e0-b096-09e14c123f02" />
+在**js文件夹**中的**indexl.js**中，红色标框处可以修改想要的动态粒子文字（如果文字增多了几幕或者减少了几幕后，记得相应地修改*720*这个倒计时数字，方便文字播放完之后自动切换到下一幕，中间尽可能保证无空缺，否则影响观感）。
+<img width="2560" height="1503" alt="image" src="https://github.com/user-attachments/assets/1dda20b3-f768-4747-add8-ba84cd5ccc36" />
+## 3.3第三幕修改 ##
+在**html文件夹**下的**生日蛋糕.html**中，如果第二幕修改了音乐，记得跟**第二幕的音乐**保持一致，这样衔接比较顺畅.
+<img width="2560" height="1525" alt="image" src="https://github.com/user-attachments/assets/4abc4b5d-161b-4553-ad3c-7acb3f585a50" />
+## 3.4第四幕修改 ##
+在**html文件夹**下的**信封.html**文件下，此处可以修改**信封第一屏**的背景音乐、以及信封上的祝福语和提示语;
+<img width="2560" height="1104" alt="image" src="https://github.com/user-attachments/assets/b2132ea5-09e8-40f8-bad3-f256eeeebb84" />
+在**js文件夹**下的**信封.js**文件下，下面那处可以修改**信封内容部分**的背景音乐，上面红色框包含的部分定义了在内容中**插入图片**的方式（内容中要插入图片的部分使用~这个符号，要跟函数内部定义的图片的顺序保持一致）;
+<img width="2560" height="1283" alt="image" src="https://github.com/user-attachments/assets/5b44a41c-461f-4b06-9104-15c14f3041db" />
+同文件下，此处可以修改信封的内容（内容要用 ‘ ’ 包含住）：**<** 这个符号表示结束时换行、+ 这个符号表示上下文字连接、^ 这个符号表示该段内容右对齐;
+<img width="2560" height="1212" alt="image" src="https://github.com/user-attachments/assets/066ae4f1-58bb-4132-b90d-25e92bed6d44" />
+在**css文件夹**下的**信封.css**文件中，此处可以修改**信封第一屏**的背景图片。
+<img width="2560" height="1199" alt="image" src="https://github.com/user-attachments/assets/5a385169-7017-478b-b6b8-2f42993e79c7" />
+同文件夹下，此处可以修改**信封内容部分**的背景图片。
+<img width="2560" height="1254" alt="image" src="https://github.com/user-attachments/assets/596b94de-c7dc-4d0a-9de5-3f6cbacd1fe1" />
+## 3.5第五幕修改 ##
+在**html文件夹**下的**贺卡.html**文件中，此处可以修改背景音乐（最好与上一幕**信封内容**部分的音乐同步修改，衔接更好）、贺卡的内容、至于**生日贺卡.jpg**也可以修改（记得把图片放在同文件夹下）；
+<img width="2560" height="1409" alt="image" src="https://github.com/user-attachments/assets/78f753aa-8849-4347-9586-e831bda169ab" />
+同文件下，如果想要修改**飘落的图片**可以首先把**所有想放进去的图片**全部放入到**img文件夹**下，并且命名为**流图1**、**流图2**等等（一定要是jpg文件）。
+<img width="2560" height="1429" alt="image" src="https://github.com/user-attachments/assets/740e9c5c-6166-4e6a-8a73-ce169741f2c6" />
+## 3.6第六幕修改 ##
+在**html文件夹**下的**彩蛋原版.html**中，此处可以修改动态粒子的**文字显示**部分，也可以修改**字体样式**，还可以修改**右下角的文字内容**；
+<img width="2545" height="1188" alt="image" src="https://github.com/user-attachments/assets/5a2a0877-33cb-4277-9d1d-2eb1034bc4bd" />
+同文件夹下，此处可以修改**背景音乐**。
+<img width="2558" height="1186" alt="image" src="https://github.com/user-attachments/assets/7d175404-2ce7-415f-b984-976ea9ffd404" />
+## 3.7第七幕修改 ##
+在**html文件夹**下的**结尾.html**中，此处可以修**文字内容**、**结尾视频**。
+<img width="2553" height="1396" alt="image" src="https://github.com/user-attachments/assets/03254ca7-12cb-4735-b885-1a1554946c6d" />
